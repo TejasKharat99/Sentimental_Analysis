@@ -8,7 +8,7 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      app: emotion-2401100
+      app: text-emotion
   template:
     metadata:
       labels:
@@ -16,7 +16,8 @@ spec:
     spec:
       containers:
       - name: text-emotion
-        image: your-registry-address/emotion-2401100:latest
+        image: local/emotion-2401100:latest
+        imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 5000
         env:

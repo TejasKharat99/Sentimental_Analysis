@@ -115,28 +115,12 @@ spec:
             steps {
                 container('dind') {
                     sh '''
-                    docker build -t ${DOCKER_IMAGE}:latest .
-                    docker tag ${DOCKER_IMAGE}:latest ${DOCKER_REGISTRY}/${DOCKER_IMAGE}:latest
+                    # Build and tag for local use
+                    docker build -t local/${DOCKER_IMAGE}:latest .
+                    
+                    # Verify the image was built
+                    docker images | grep ${DOCKER_IMAGE}
                     '''
-                }
-            }
-        }
-
-        stage('Push to Registry') {
-            steps {
-                container('dind') {
-                    withCredentials([
-                        usernamePassword(
-                            credentialsId: 'docker-registry-creds',
-                            usernameVariable: 'DOCKER_USER',
-                            passwordVariable: 'DOCKER_PASS'
-                        )
-                    ]) {
-                        sh '''
-                        echo $DOCKER_PASS | docker login ${DOCKER_REGISTRY} -u $DOCKER_USER --password-stdin
-                        docker push ${DOCKER_REGISTRY}/${DOCKER_IMAGE}:latest
-                        '''
-                    }
                 }
             }
         }
@@ -147,15 +131,18 @@ spec:
                     script {
                         dir('k8s') {
                             sh """
+                            # Create namespace if it doesn't exist
                             kubectl get namespace ${K8S_NAMESPACE} || kubectl create namespace ${K8S_NAMESPACE}
+                            
+                            # Apply Kubernetes manifests
                             kubectl apply -f deployment.yaml -n ${K8S_NAMESPACE}
                             kubectl apply -f service.yaml -n ${K8S_NAMESPACE}
                             
                             # Force rollout to pick up new image
-                            kubectl rollout restart deployment/text-emotion-deployment -n ${K8S_NAMESPACE}
+                            kubectl rollout restart deployment/emotion-2401100-deployment -n ${K8S_NAMESPACE}
                             
                             # Wait for rollout to complete
-                            kubectl rollout status deployment/text-emotion-deployment -n ${K8S_NAMESPACE}
+                            kubectl rollout status deployment/emotion-2401100-deployment -n ${K8S_NAMESPACE}
                             """
                         }
                     }
