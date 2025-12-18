@@ -57,18 +57,17 @@ spec:
         stage('Code Quality') {
             steps {
                 container('python') {
-                    withCredentials([string(credentialsId: 'SONAR_AUTH_TOKEN', variable: 'SONAR_TOKEN')]) {
-                        sh '''
-                        apt-get update && apt-get install -y wget unzip
-                        wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.8.0.2856-linux.zip
-                        unzip sonar-scanner-cli-4.8.0.2856-linux.zip
-                        ./sonar-scanner-4.8.0.2856-linux/bin/sonar-scanner \
-                            -Dsonar.projectKey=text-emotion-detection \
-                            -Dsonar.sources=. \
-                            -Dsonar.host.url=${SONAR_HOST_URL} \
-                            -Dsonar.login=${SONAR_TOKEN}
-                        '''
-                    }
+                    sh '''
+                    # Install required tools
+                    apt-get update && apt-get install -y wget unzip
+                    
+                    # Download and extract sonar-scanner
+                    wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.8.0.2856-linux.zip
+                    unzip sonar-scanner-cli-4.8.0.2856-linux.zip
+                    
+                    # Run sonar-scanner (will use sonar-project.properties for configuration)
+                    ./sonar-scanner-4.8.0.2856-linux/bin/sonar-scanner
+                    '''
                 }
             }
         }
