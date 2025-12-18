@@ -56,7 +56,7 @@ spec:
         DOCKER_IMAGE = "emotion-2401100"
         DOCKER_REGISTRY = "your-registry-address" // Update with your registry
         K8S_NAMESPACE = "emotion-2401100"
-        SONAR_HOST_URL = "http://localhost:9000"
+        SONAR_HOST_URL = "http://sonarqube.sonarqube.svc.cluster.local:9000"  # Using Kubernetes service name
     }
 
     stages {
@@ -101,6 +101,8 @@ spec:
                             -Dsonar.projectName=Emotion_2401100 \
                             -Dsonar.host.url=${SONAR_HOST_URL} \
                             -Dsonar.login=sqp_9600400ad1bc19cfe53d8530d54bbf8ae4067ab4 \
+                            -Dsonar.qualitygate.wait=true \
+                            -Dsonar.qualitygate.timeout=300 \
                             -Dsonar.sources=. \
                             -Dsonar.python.version=3.9
                         '''
