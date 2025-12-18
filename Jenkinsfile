@@ -53,8 +53,7 @@ spec:
     }
 
     environment {
-        DOCKER_IMAGE = "emotion-2401100"
-        DOCKER_REGISTRY = "your-registry-address" // Update with your registry
+        DOCKER_IMAGE = "local/emotion-2401100"
         K8S_NAMESPACE = "emotion-2401100"
         SONAR_HOST_URL = "http://my-sonarqube-sonarqube.sonarqube.svc.cluster.local:9000"
     }
@@ -116,10 +115,10 @@ spec:
                 container('dind') {
                     sh '''
                     # Build and tag for local use
-                    docker build -t local/${DOCKER_IMAGE}:latest .
+                    docker build -t ${DOCKER_IMAGE}:latest .
                     
                     # Verify the image was built
-                    docker images | grep ${DOCKER_IMAGE}
+                    docker images | grep emotion-2401100
                     '''
                 }
             }
