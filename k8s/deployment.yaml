@@ -1,27 +1,31 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: text-emotion-detection
+  name: emotion-2401100-deployment
   labels:
-    app: text-emotion-detection
+    app: emotion-2401100
 spec:
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
-      app: text-emotion-detection
+      app: emotion-2401100
   template:
     metadata:
       labels:
-        app: text-emotion-detection
+        app: text-emotion
     spec:
       containers:
-      - name: text-emotion-detection
-        image: text-emotion-detection:latest
+      - name: text-emotion
+        image: your-registry-address/emotion-2401100:latest
         ports:
         - containerPort: 5000
         env:
         - name: FLASK_ENV
           value: "production"
+        - name: FLASK_APP
+          value: "app.py"
+        - name: PORT
+          value: "5000"
         resources:
           limits:
             cpu: "1"
