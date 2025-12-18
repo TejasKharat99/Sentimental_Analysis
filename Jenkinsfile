@@ -28,9 +28,18 @@ pipeline {
         }
         
         stage('Code Quality Check') {
+            environment {
+                SONAR_TOKEN = credentials('SONAR_AUTH_TOKEN')
+            }
             steps {
                 withSonarQubeEnv('SonarQube') {
-                    sh 'sonar-scanner -Dsonar.projectKey=text-emotion-detection -Dsonar.sources=. -Dsonar.host.url=${SONAR_HOST_URL} -Dsonar.login=${SONAR_AUTH_TOKEN}'
+                    sh """
+                    sonar-scanner \
+                        -Dsonar.projectKey=text-emotion-detection \
+                        -Dsonar.sources=. \
+                        -Dsonar.host.url=${SONAR_HOST_URL} \
+                        -Dsonar.login=${SONAR_TOKEN}
+                    """
                 }
             }
         }
