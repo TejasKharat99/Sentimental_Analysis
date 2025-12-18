@@ -55,9 +55,6 @@ spec:
         }
         
         stage('Code Quality') {
-            when {
-                branch 'main'
-            }
             steps {
                 container('python') {
                     withCredentials([string(credentialsId: 'SONAR_AUTH_TOKEN', variable: 'SONAR_TOKEN')]) {
@@ -77,9 +74,6 @@ spec:
         }
         
         stage('Build & Push') {
-            when {
-                branch 'main'
-            }
             steps {
                 script {
                     echo 'Docker build would happen here'
@@ -89,9 +83,6 @@ spec:
         }
         
         stage('Deploy') {
-            when {
-                branch 'main'
-            }
             steps {
                 script {
                     echo 'Kubernetes deployment would happen here'
