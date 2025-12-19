@@ -1,7 +1,7 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, jsonify
 import joblib
-from flask import Flask, request, jsonify
 import numpy as np
+import os
 
 app = Flask(__name__)
 
@@ -82,5 +82,10 @@ def predict():
         print("Error processing prediction:", e)
         return jsonify({'error': 'An error occurred while processing the prediction'})
 
+@app.route('/health')
+def health_check():
+    return jsonify({'status': 'healthy'}), 200
+
 if __name__ == '__main__':
-    app.run(debug=True)
+    port = int(os.environ.get('PORT', 5000))
+    app.run(host='0.0.0.0', port=port, debug=os.environ.get('FLASK_DEBUG', '0') == '1')
